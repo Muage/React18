@@ -61,6 +61,10 @@ ul {
   width: 34px;
 }
 
+.win {
+  color: blue;
+}
+
 .board-row:after {
   clear: both;
   content: '';

@@ -3,6 +3,7 @@ import './App.css';
 
 interface SquareProps {
   value: string
+  win: boolean | undefined
   onSquareClick: () => void
 }
 
@@ -27,23 +28,26 @@ function calculateWinner(squares: string[]) {
   for(let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i]
     if(squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a]
+      return {
+        winner: squares[a],
+        line: lines[i]
+      }
     }
   }
   return null
 }
 
-function Square({ value, onSquareClick }: SquareProps) {
+function Square({ value, win, onSquareClick }: SquareProps) {
 
   return (
-    <button className="square" onClick={onSquareClick}>
-      {value}
-    </button>
+    <button className={`square ${win ? 'win' : ''}`} onClick={onSquareClick}>{value}</button>
   )
 }
 
 function Board({ xIsNext, squares, onPlay}: BoardProps) {
-  const winner = calculateWinner(squares)
+  const winInfo = calculateWinner(squares)
+  const winner = winInfo ? winInfo.winner : ""
+  const winLine = winInfo ? winInfo.line : []
   let status
 
   if(winner) {
@@ -72,7 +76,7 @@ function Board({ xIsNext, squares, onPlay}: BoardProps) {
       let rows = []
       for(let j = 0; j < 3; j++) {
         const index = i * 3 + j
-        rows.push(<Square key={j} value={squares[index]} onSquareClick={() => handleClick(index)} />)
+        rows.push(<Square key={j} value={squares[index]} win={winLine.includes(index)} onSquareClick={() => handleClick(index)} />)
       }
       cols.push(<div key={i} className="board-row">{rows}</div>)
     }
