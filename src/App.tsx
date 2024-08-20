@@ -10,7 +10,7 @@ interface SquareProps {
 interface BoardProps {
   xIsNext: boolean
   squares: string[]
-  onPlay: (nextSquares: string[]) => void
+  onPlay: (nextSquares: string[], location: string) => void
 }
 
 function calculateWinner(squares: string[]) {
@@ -35,6 +35,12 @@ function calculateWinner(squares: string[]) {
     }
   }
   return null
+}
+
+function getLocation(index: number) {
+  const col = index % 3 + 1
+  const row = Math.floor(index / 3) + 1
+  return `${col}, ${row}`
 }
 
 function Square({ value, win, onSquareClick }: SquareProps) {
@@ -68,7 +74,7 @@ function Board({ xIsNext, squares, onPlay}: BoardProps) {
     } else {
       nextSquares[index] = "O"
     }
-    onPlay(nextSquares)
+    onPlay(nextSquares, getLocation(index))
   }
 
   const renderSquares = () => {
@@ -95,13 +101,13 @@ function Board({ xIsNext, squares, onPlay}: BoardProps) {
 function Game() {
   const [reverse, setReverse] = useState(true)
   const [currentMove, setCurrentMove] = useState(0)
-  const [history, setHistory] = useState([Array(9).fill(null)])
+  const [history, setHistory] = useState([{squares: Array(9).fill(null), location: ''}])
 
-  const currentSquares = history[currentMove]
+  const currentSquares = history[currentMove].squares
   const xIsNext = currentMove % 2 === 0
 
-  function handlePlay(nextSquares: string[]) {
-    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares]
+  function handlePlay(nextSquares: string[], location: string) {
+    const nextHistory = [...history.slice(0, currentMove + 1), { squares: nextSquares, location }]
     setHistory(nextHistory)
     setCurrentMove(nextHistory.length - 1)
   }
@@ -113,7 +119,7 @@ function Game() {
   const moves = history.map((squares, move) => {
     let description
     if(move > 0) {
-      description = 'Go to move #' + move
+      description = `Go to move #${move} (${squares.location})`
     } else {
       description = 'Go to game start'
     }
