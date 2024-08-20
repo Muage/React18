@@ -3,7 +3,7 @@ import './App.css';
 
 interface SquareProps {
   value: string
-  win: boolean | undefined
+  win: boolean
   onSquareClick: () => void
 }
 
@@ -38,7 +38,6 @@ function calculateWinner(squares: string[]) {
 }
 
 function Square({ value, win, onSquareClick }: SquareProps) {
-
   return (
     <button className={`square ${win ? 'win' : ''}`} onClick={onSquareClick}>{value}</button>
   )
@@ -52,6 +51,8 @@ function Board({ xIsNext, squares, onPlay}: BoardProps) {
 
   if(winner) {
     status = "Winner: " + winner
+  } else if(squares.every(Boolean)) {
+    status = "Draw!"
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O")
   }
