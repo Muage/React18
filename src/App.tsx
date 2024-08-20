@@ -88,6 +88,7 @@ function Board({ xIsNext, squares, onPlay}: BoardProps) {
 }
 
 function Game() {
+  const [reverse, setReverse] = useState(true)
   const [currentMove, setCurrentMove] = useState(0)
   const [history, setHistory] = useState([Array(9).fill(null)])
 
@@ -122,6 +123,12 @@ function Game() {
     )
   })
 
+  const handleOrder = () => {
+    setReverse(!reverse)
+  }
+
+  if(!reverse) moves.reverse()
+
   return (
     <div className="game">
       
@@ -130,6 +137,8 @@ function Game() {
       </div>
 
       <div className="game-info">
+        <button onClick={handleOrder}>정렬</button>
+
         <ol>{moves}</ol>
       </div>
 
